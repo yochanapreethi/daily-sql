@@ -20,6 +20,8 @@ JOIN Players p
 ORDER BY m.match_date DESC
 LIMIT 5;
 
+
+
 -- Q-02:
 -- What is the maximum number of participants in WhatsApp groups
 -- that were created in October 2024?
@@ -29,3 +31,16 @@ SELECT MAX(participant_count) AS max_participants
 FROM dim_groups
 WHERE EXTRACT(YEAR FROM created_date) = 2024
   AND EXTRACT(MONTH FROM created_date) = 10;
+
+
+
+-- Q-03:
+-- For WhatsApp groups with more than 50 participants that were created
+-- In October 2024, what is the average number of messages sent?
+-- This insight helps assess engagement in larger groups.
+
+SELECT AVG(total_messages) AS avg_messages
+FROM dim_groups
+WHERE EXTRACT(YEAR FROM created_date) = 2024
+  AND EXTRACT(MONTH FROM created_date) = 10
+  AND participant_count > 50;
