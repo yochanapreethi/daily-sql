@@ -19,3 +19,13 @@ JOIN Players p
     ON m.winner = p.player_name
 ORDER BY m.match_date DESC
 LIMIT 5;
+
+-- Q-02:
+-- What is the maximum number of participants in WhatsApp groups
+-- that were created in October 2024?
+-- This metric helps identify the largest group size available.
+
+SELECT MAX(participant_count) AS max_participants
+FROM dim_groups
+WHERE EXTRACT(YEAR FROM created_date) = 2024
+  AND EXTRACT(MONTH FROM created_date) = 10;
