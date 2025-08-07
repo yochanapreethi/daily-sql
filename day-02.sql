@@ -44,3 +44,20 @@ FROM dim_groups
 WHERE EXTRACT(YEAR FROM created_date) = 2024
   AND EXTRACT(MONTH FROM created_date) = 10
   AND participant_count > 50;
+
+
+
+-- Using multiple joins
+use sql_store;
+
+SELECT o.order_id,
+		o.customer_id,
+        o.order_date,
+        o.shipped_date,
+        c.first_name,
+        c.last_name
+	FROM orders o
+JOIN customers c 
+ON o.customer_id = c.customer_id
+JOIN order_statuses s
+ON o.status = s.order_status_id
