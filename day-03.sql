@@ -124,3 +124,17 @@ FROM projects p
 LEFT JOIN employees e
   ON p.manager_id = e.emp_id
 WHERE p.status IN ('ongoing', 'paused');
+
+
+'''
+| Join Type           | What it Does                                            | When to Use                                      | Key Exception/Note                                                               |
+| ------------------- | ------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------- |
+| **INNER JOIN**      | Keeps only matching rows                                | You want rows that exist in **both** tables      | Drops unmatched rows from either side                                            |
+| **LEFT JOIN**       | Keeps all rows from left, matched from right or NULL    | Keep all left table rows, even if no right match | Filters on right table columns in WHERE break LEFT JOIN effect (drops unmatched) |
+| **RIGHT JOIN**      | Keeps all rows from right, matched from left or NULL    | Keep all right table rows                        | Rare; usually swap tables and use LEFT JOIN                                      |
+| **FULL OUTER JOIN** | Keeps all rows from both tables, matched where possible | Get every row from both sides                    | Not supported in MySQL directly (simulate with UNION)                            |
+| **CROSS JOIN**      | Cartesian product of both tables                        | Generate every combo or test data                | Huge results if large tables                                                     |
+| **SELF JOIN**       | Table joined to itself                                  | Compare rows within same table (hierarchy)       | Use aliases to differentiate instances                                           |
+| **NATURAL JOIN**    | Join automatically on columns with same name            | Quick join on common columns                     | Risky — break if columns rename or added                                         |
+'''
+
