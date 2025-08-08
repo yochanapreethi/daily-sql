@@ -107,3 +107,20 @@ LEFT JOIN vs WHERE filter difference
 -- WHERE B.status = 'active'
 
 """
+
+'''Q-01
+Tables:
+
+employees (emp_id, name, dept_id)
+salaries (emp_id, salary, status)
+
+Task:
+List all employees with their salary only if status = "active". Show NULL if no salary or inactive. '''
+
+SELECT p.project_id,
+       p.status,
+       e.name AS manager_name
+FROM projects p
+LEFT JOIN employees e
+  ON p.manager_id = e.emp_id
+WHERE p.status IN ('ongoing', 'paused');
