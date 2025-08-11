@@ -76,3 +76,40 @@ WHERE rnk <= 3;
 2. `ORDER BY total_amount DESC` → highest orders first.
 3. `RANK()` → assigns the same rank to ties, so all tied 3rd-place orders are included.
 4. Outer query filters `rnk <= 3` → keeps top 3 (with ties). '''
+
+
+
+Alright, here’s the clean **Question → Code → Explanation** format for your repo:
+
+---
+
+''' Q-03: You are given two tables:
+    
+`Visits` — contains all mall visits.
+`Transactions` — contains transactions made during those visits.
+Find the IDs of customers who visited the mall without making any transactions, and count how many times they did so.
+Return results in any order.'''
+
+-- Code:
+SELECT v.customer_id, COUNT(*) AS count_no_trans
+FROM Visits v
+LEFT JOIN Transactions t
+  ON v.visit_id = t.visit_id
+WHERE t.transaction_id IS NULL
+GROUP BY v.customer_id;
+
+''' Explanation
+
+1. LEFT JOIN
+   * Matches each visit in `Visits` with any transactions in `Transactions` by `visit_id`.
+   * Keeps *all* visits, even those with no matching transaction.
+
+2. `t.transaction_id IS NULL`
+   * After a LEFT JOIN, if no transaction exists for a visit, all columns from `Transactions` will be `NULL`.
+   * This condition filters out visits that had at least one transaction.
+
+3. `COUNT(*)` + `GROUP BY`
+   * Counts how many transaction-less visits each customer had.
+   * Groups by `customer_id` to show counts per customer. '''
+
+
