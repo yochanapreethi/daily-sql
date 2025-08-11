@@ -35,3 +35,44 @@ SELECT
     RANK() OVER (PARTITION BY cust_id ORDER BY amount DESC) AS rank_within_customer
 FROM int_orders
 ORDER BY cust_id, rank_within_customer;
+
+
+
+'''Q-02: Top 3 Most Expensive Orders per Customer (Including Ties)
+    
+Table: `orders`
+| order_id  | customer_id  | order_date  | total_amount  |
+| --------- | ------------ | ----------- | ------------- |
+| 1         | 101          | 2024-01-10  | 500.00        |
+| 2         | 101          | 2024-01-15  | 450.00        |
+| 3         | 101          | 2024-01-20  | 450.00        |
+| 4         | 101          | 2024-02-01  | 300.00        |
+| 5         | 102          | 2024-01-12  | 800.00        |
+| 6         | 102          | 2024-01-18  | 750.00        |
+| 7         | 102          | 2024-01-22  | 700.00        |
+| 8         | 102          | 2024-01-28  | 700.00        |
+| 9         | 103          | 2024-01-05  | 1000.00       |
+| 10        | 103          | 2024-01-25  | 950.00        |
+
+Find the top 3 most expensive orders for each customer.
+If there is a tie for 3rd place, include all tied orders.'''
+
+SELECT order_id,
+       customer_id,
+       order_date,
+       total_amount
+FROM (
+    SELECT order_id,
+           customer_id,
+           order_date,
+           total_amount,
+           RANK() OVER (PARTITION BY customer_id ORDER BY total_amount DESC) AS rnk
+    FROM orders
+) t
+WHERE rnk <= 3;
+
+'''Explanation:
+1. `PARTITION BY customer_id` → ranking restarts for each customer.
+2. `ORDER BY total_amount DESC` → highest orders first.
+3. `RANK()` → assigns the same rank to ties, so all tied 3rd-place orders are included.
+4. Outer query filters `rnk <= 3` → keeps top 3 (with ties). '''
