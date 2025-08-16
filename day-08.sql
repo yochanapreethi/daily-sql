@@ -44,5 +44,60 @@ JOIN Person p2
 
 * `JOIN` matches duplicate emails in the same table
 * `p1.id > p2.id` → keeps the smallest id deletes the rest
-* So only one unique email with the lowest id remains'''
+* So only one unique email with the lowest id remains
+
+
+
+
+##Q-03: Find Patients with Type I Diabetes
+
+Table: `Patients`
+| Column Name   | Type    |
+| ------------- | ------- |
+| patient\_id   | int     |
+| patient\_name | varchar |
+| conditions    | varchar |
+
+* `patient_id` is the primary key
+* `conditions` contains 0 or more codes separated by spaces.
+* We want to find patients diagnosed with Type I Diabetes which always starts with the prefix `"DIAB1"`.
+
+#Example Input
+
+Patients Table:
+| patient_id  | patient_name  | conditions    |
+| ----------- | ------------- | ------------- |
+| 1           | George        | ACNE +DIAB100 |
+| 2           | Alain         | DIAB201       |
+| 3           | Bob           | DIAB100 MYOP  |
+| 4           | Daniel        | YFEV COUGH    |
+| 5           | Alice         |               |
+
+
+# Expected Output
+
+| patient_id  | patient_name  | conditions   |
+| ----------- | ------------- | ------------ |
+| 3           | Bob           | DIAB100 MYOP |
+| 4           | George        | ACNE DIAB100 |'''
+
+--code
+SELECT patient_id, patient_name, conditions
+FROM Patients
+WHERE conditions REGEXP '(^| )DIAB1';
+
+
+'''## Explanation
+* `REGEXP` is used to match patterns in strings.
+* `(^| )DIAB1` means:
+  * `^` → start of the string
+  * `|` → OR
+  * `' '` → a space
+  * So this ensures `"DIAB1"` appears either at the start of the string OR right after a space.
+
+This way, we only capture clean occurrences like:
+* `"DIAB100"` ✅ (at start)
+* `"ACNE DIAB100"` ✅ (after space)
+* `"ACNE+DIAB100"` ❌ (blocked, because `+` is not a space)
+
 
