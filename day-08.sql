@@ -101,3 +101,35 @@ This way, we only capture clean occurrences like:
 * `"ACNE+DIAB100"` ❌ (blocked, because `+` is not a space)
 
 
+
+## Q-04: Fix Names Formatting
+
+# Example Input
+
+Users Table:
+| user_id  | name  |
+| -------- | ----- |
+| 1        | aLice |
+| 2        | bOB   |
+
+# Expected Output
+
+| user_id  | name  |
+| -------- | ----- |
+| 1        | Alice |
+| 2        | Bob   |'''
+
+--code
+SELECT 
+  user_id, 
+  CONCAT(UPPER(LEFT(name, 1)), LOWER(SUBSTRING(name, 2))) AS name
+FROM Users
+ORDER BY user_id ASC;
+
+'''# Explanation
+* `UPPER(LEFT(name, 1))` → makes the **first letter uppercase**.
+* `LOWER(SUBSTRING(name, 2))` → converts the **rest of the string to lowercase**.
+* `CONCAT(...)` → combines them into the corrected name.
+* `ORDER BY user_id ASC` → ensures output is sorted by `user_id`.
+
+
