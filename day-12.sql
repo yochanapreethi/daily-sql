@@ -48,3 +48,50 @@ ORDER BY tweet_bucket;
 
 
 
+'''## Q-02: Report the products that were **only sold in the first quarter of 2019** (between `2019-01-01` and `2019-03-31`, inclusive).
+Return the result table in any order
+
+
+## Tables
+Product Table
+| product_id  | product_name  | unit_price  |
+| ----------- | ------------- | ----------- |
+| 1           | S8            | 1000        |
+| 2           | G4            | 800         |
+| 3           | iPhone        | 1400        |
+
+Sales Table
+| seller_id  | product_id  | buyer_id  | sale_date  | quantity | price |
+| ---------- | ----------- | --------- | ---------- | -------- | ----- |
+| 1          | 1           | 1         | 2019-01-21 | 2        | 2000  |
+| 1          | 2           | 2         | 2019-02-17 | 1        | 800   |
+| 2          | 2           | 3         | 2019-06-02 | 1        | 800   |
+| 3          | 3           | 4         | 2019-05-13 | 2        | 2800  |'''
+
+--code
+SELECT p.product_id, p.product_name
+FROM Product p
+JOIN Sales s ON p.product_id = s.product_id
+GROUP BY p.product_id, p.product_name
+HAVING MIN(s.sale_date) >= '2019-01-01'
+   AND MAX(s.sale_date) <= '2019-03-31';
+
+
+'''## Output
+| product_id  | product_name  |
+| ----------- | ------------- |
+| 1           | S8            |
+
+
+## Explanation
+1. JOIN connects products with their sales to get both `product_id` and `product_name`.
+2. GROUP BY groups all sales by product.
+3. MIN(s.sale_date) finds the earliest sale for each product.
+4. MAX(s.sale_date) finds the latest sale for each product.
+5. HAVING filters only the products where:
+   * The earliest sale ≥ `2019-01-01`
+   * The latest sale ≤ `2019-03-31`
+
+This guarantees that the product was sold only in Q1 2019, not before or after.'''
+
+
