@@ -49,3 +49,81 @@ GROUP BY id;
 * `GROUP BY id` → one row per department.
 * Months with no data default to `null` '''
 
+
+
+'''## Q-02: Report the total distance traveled by each user.
+* Include users with **no rides** (distance = 0).
+* Sort by `travelled_distance` **descending**.
+* If two or more users traveled the same distance, order them by `name` alphabetically.
+
+## Input Tables
+Users
+| id | name     |
+| -- | -------- |
+| 1  | Alice    |
+| 2  | Bob      |
+| 3  | Alex     |
+| 4  | Donald   |
+| 7  | Lee      |
+| 13 | Jonathan |
+| 19 | Elvis    |
+
+Rides
+| id | user_id  | distance |
+| -- | -------- | -------- |
+| 1  | 1        | 120      |
+| 2  | 2        | 317      |
+| 3  | 3        | 222      |
+| 4  | 7        | 100      |
+| 5  | 13       | 312      |
+| 6  | 19       | 50       |
+| 7  | 7        | 120      |
+| 8  | 19       | 400      |
+| 9  | 7        | 230      |'''
+
+--code
+SELECT u.name, 
+       COALESCE(SUM(r.distance), 0) AS travelled_distance
+FROM Users u
+LEFT JOIN Rides r
+  ON u.id = r.user_id
+GROUP BY u.id, u.name
+ORDER BY travelled_distance DESC, u.name ASC;
+
+'''## Output
+| name     | travelled_distance  |
+| -------- | ------------------- |
+| Elvis    | 450                 |
+| Lee      | 450                 |
+| Bob      | 317                 |
+| Jonathan | 312                 |
+| Alex     | 222                 |
+| Alice    | 120                 |
+| Donald   | 0                   |
+
+
+##  Explanation
+* `LEFT JOIN` → keeps all users, even if they never rode.
+* `SUM(r.distance)` → sums ride distances per user.
+* `COALESCE(SUM(...), 0)` → converts `NULL` into `0` for users with no rides.
+* `GROUP BY u.id, u.name` → ensures one row per user.
+* `ORDER BY travelled_distance DESC, u.name ASC` → sorts by distance (descending) and breaks ties alphabetically.'''
+
+## About `COALESCE`
+`COALESCE(expr1, expr2, ..., exprN)` returns the first non-NULL value in the list.
+
+'Key use cases:
+1. Replace NULL with a default.'
+--code
+   SELECT COALESCE(phone, 'N/A') FROM Users;
+
+'2. Handle empty aggregations'
+--code
+   COALESCE(SUM(distance), 0)
+   → Ensures you get `0` instead of `NULL` for users with no rides.
+    
+'3. Multi-column fallback'
+--code
+   SELECT COALESCE(nickname, username, 'Anonymous') FROM Users;
+
+
